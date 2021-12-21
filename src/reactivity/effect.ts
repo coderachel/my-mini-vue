@@ -66,10 +66,10 @@ export function track(target, key) {
 
   // 看看 dep 之前有没有添加过，添加过的话 那么就不添加了
   if (dep.has(activeEffect)) return;
-  trackEffect(dep);
+  trackEffects(dep);
 }
 
-export function trackEffect(dep) {
+export function trackEffects(dep) {
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 }
@@ -82,10 +82,10 @@ export function trigger(target, key) {
   let depsMap = targetMap.get(target);
   let dep = depsMap.get(key);
 
-  triggerEffect(dep);
+  triggerEffects(dep);
 }
 
-export function triggerEffect(dep) {
+export function triggerEffects(dep) {
   for (const effect of dep) {
     if (effect.scheduler) {
       effect.scheduler();
