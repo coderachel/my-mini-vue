@@ -2,7 +2,7 @@ import { extend } from "../shared";
 
 let activeEffect;
 let shouldTrack = false;
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: any;
   deps = [];
   active = true;
@@ -95,12 +95,13 @@ export function triggerEffects(dep) {
   }
 }
 
+// 返回一个runner函数
 export function effect(fn, options: any = {}) {
   // fn
   const _effect = new ReactiveEffect(fn, options.scheduler);
   extend(_effect, options);
 
-  _effect.run();
+  _effect.run(); // 依赖收集的入口
 
   const runner: any = _effect.run.bind(_effect);
   runner.effect = _effect;

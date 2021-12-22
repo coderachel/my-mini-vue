@@ -8,8 +8,8 @@ class RefImpl {
   private _rawValue: any;
   public _v_isRef = true;
   constructor(value) {
-    this._rawValue = value;
-    this._value = convert(value);
+    this._rawValue = value; // 保存原始值
+    this._value = convert(value); // 如果是对象，则转化成响应式对象
     this.dep = new Set();
   }
   get value() {
@@ -17,6 +17,7 @@ class RefImpl {
     return this._value;
   }
   set value(newVal) {
+    // 如果值没有改变，那么没必要重复触发
     if (hasChanged(newVal, this._rawValue)) {
       this._rawValue = newVal;
       this._value = convert(newVal);
