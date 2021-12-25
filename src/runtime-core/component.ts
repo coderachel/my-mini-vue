@@ -2,6 +2,7 @@ import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 import { initProps } from "./componentProps";
 import { initSlots } from "./componentSlots";
 import { shallowReadonly } from "../reactivity/reactive";
+import { emit } from "./componentEmit";
 
 export function createComponentInstance(vnode: any) {
   const component = {
@@ -10,7 +11,9 @@ export function createComponentInstance(vnode: any) {
     setupState: {},
     props: {},
     slots: {},
+    emit: () => {},
   };
+  component.emit = emit.bind(null, component) as any;
   return component;
 }
 
@@ -28,7 +31,11 @@ function setupStatefulComponent(instance: any) {
   instance.proxy = new Proxy({ _: instance }, PublicInstanceProxyHandlers);
 
   if (setup) {
-    const setupResult = setup(shallowReadonly(instance.props));
+    setCurrentInstance(instance);
+    const setupResult = setup(shallowReadonly(instance.props), {
+      emit: instance.emit,
+    });
+    setCurrentInstance(null);
     handleSetupResult(instance, setupResult);
   }
 }
@@ -48,4 +55,14 @@ function finishComponentSetup(instance: any) {
   if (Component.render) {
     instance.render = Component.render;
   }
+}
+
+let currentInstance = null;
+
+export function getCurrentInstance() {
+  return currentInstance;
+}
+
+export function setCurrentInstance(instance) {
+  currentInstance = instance;
 }
