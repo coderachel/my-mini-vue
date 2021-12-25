@@ -13,7 +13,7 @@ class RefImpl {
     this.dep = new Set();
   }
   get value() {
-    trackRefValue(this.dep);
+    trackRefValue(this);
     return this._value;
   }
   set value(newVal) {
@@ -34,9 +34,9 @@ function convert(value) {
   return isObject(value) ? reactive(value) : value;
 }
 
-function trackRefValue(dep) {
+function trackRefValue(ref) {
   if (isTracking()) {
-    trackEffects(dep);
+    trackEffects(ref.dep);
   }
 }
 

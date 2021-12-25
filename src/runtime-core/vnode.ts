@@ -26,7 +26,6 @@ export function createVNode(type, props?, children?) {
 }
 
 export function createTextVNode(text: string) {
-  debugger;
   return createVNode(Text, {}, text);
 }
 
