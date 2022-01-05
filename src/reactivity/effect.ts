@@ -17,9 +17,11 @@ export class ReactiveEffect {
       return this._fn();
     }
 
-    // 应该收集
+    // 打开收集依赖的开关
     shouldTrack = true;
+    // 指向当前活跃的观察者
     activeEffect = this;
+    // 这个过程会涉及到对响应式数据操作
     const r = this._fn();
 
     // 重置
@@ -49,6 +51,7 @@ function cleanupEffect(effect) {
 
 const targetMap = new Map();
 
+// 依赖收集实现的原理
 export function track(target, key) {
   if (!isTracking()) return;
   // target -> key -> dep
@@ -100,8 +103,8 @@ export function effect(fn, options: any = {}) {
   // fn
   const _effect = new ReactiveEffect(fn, options.scheduler);
   extend(_effect, options);
-
-  _effect.run(); // 依赖收集的入口
+  // 依赖收集的入口
+  _effect.run();
 
   const runner: any = _effect.run.bind(_effect);
   runner.effect = _effect;

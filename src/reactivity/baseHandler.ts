@@ -2,11 +2,6 @@ import { extend, isObject } from "../shared";
 import { track, trigger } from "./effect";
 import { reactive, ReactiveFlags, readonly } from "./reactive";
 
-const get = createGetter();
-const set = createSetter();
-const readonlyGet = createGetter(true);
-const shallowReadonlyGet = createGetter(true, true);
-
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target, key) {
     if (key === ReactiveFlags.IS_REACTIVE) {
@@ -24,7 +19,7 @@ function createGetter(isReadonly = false, shallow = false) {
     if (isObject(res)) {
       return isReadonly ? readonly(res) : reactive(res);
     }
-
+    // 如果不是只读，需要进行依赖收集
     if (!isReadonly) {
       track(target, key);
     }
@@ -40,6 +35,11 @@ function createSetter() {
     return res;
   };
 }
+
+const get = createGetter();
+const set = createSetter();
+const readonlyGet = createGetter(true);
+const shallowReadonlyGet = createGetter(true, true);
 
 export const mutableHandlers = {
   get,

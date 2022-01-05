@@ -1,7 +1,16 @@
-## 安装 rollup
+## 响应式原理
 
-```
-yarn add rollup --dev
-yarn add @rollup/plugin-typescript
-yarn add tslib --dev
-```
+不管是 vue2 还是 vue3，都还存在着响应式原理。虽然功能还是这个功能，但是其实现的方式却是不一样了。
+
+### 什么是响应式原理
+
+响应式原理本质就是观察者模式（定义对象间一种一对多的依赖关系，使得当每一个对象改变状态，则所有依赖于它的对象都会得到通知并自动更新）的实现。对应到 vue 中，被观察的对象就是响应式对象，观察者就是（渲染 watcher，用户 watcher,computed watcher）。
+
+### 实现响应式原理的思路
+
+将我们的响应式对象做层代理，当响应式对象进行读操作时，对当前活动的观察者（很重要）进行依赖收集。当响应式对象进行写操作时，会对收集的观察者进行派发更新
+
+### 本项目中 reactivity 模块
+
+- src/reactivity/\*(功能实现)
+- src/reactivity/tests(测试用例)
